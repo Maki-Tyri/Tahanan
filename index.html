@@ -2,511 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Maki Web</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Page</title>
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f7; margin: 0; }
-    .login-container, .container { max-width: 600px; margin: auto; padding: 20px; }
-    .login-box, .signup-container, .section {
-      background: white; padding: 30px; border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-top: 20px; position: relative;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
-    .login-box { text-align: center; }
-    .close-btn {
-      position: absolute; top: 10px; right: 15px; cursor: pointer;
-      background: none; border: none; font-size: 20px;
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
     }
-    input[type="text"], input[type="password"], input[type="number"], input[type="date"] {
-      width: 100%; padding: 10px; margin: 10px 0;
-      border-radius: 10px; border: 1px solid #ccc;
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
-    button {
-      padding: 10px 15px; border: none; background: #555; color: white;
-      border-radius: 10px; cursor: pointer;
+
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #111827;
     }
-    button:hover { background: #333; }
-    .nav-buttons {
-      display: flex; flex-wrap: wrap; gap: 10px;
-      justify-content: center; margin-bottom: 20px;
+
+    .input-group {
+      margin-bottom: 15px;
     }
-    .nav-buttons button { flex: 1; min-width: 100px; }
-    .dashboard, .page { display: none; }
-    .active { display: block; }
-    .item {
-      display: flex; align-items: center; gap: 10px; margin: 10px 0;
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #374151;
+      font-size: 14px;
     }
-    .item input[type="number"], .item input[type="date"] { width: 100px; display: block; }
-    .item button {
-      background-color: red; border-radius: 50%; padding: 5px 10px;
-      border: none; color: white; font-weight: bold; cursor: pointer;
-    }
-    footer {
-      text-align: center; padding: 10px; background: #ddd;
-      position: fixed; bottom: 0; width: 100%;
-    }
-    table {
-      border-collapse: collapse; 
+
+    .input-group input {
       width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
     }
-    table, th, td {
-      border: 1px solid #ccc;
+
+    .input-group input:focus {
+      border-color: #2563eb;
     }
-    th, td {
-      padding: 8px; text-align: left;
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-
-<div class="login-container" id="loginPage" style="display: block;">
   <div class="login-box">
-    <h1>Budget Tracker</h1>
-    <input type="text" id="loginUsername" placeholder="Username" />
-    <input type="password" id="loginPassword" placeholder="Password" />
+    <h2>Login</h2>
+
+    <div class="input-group">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Enter username" />
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter password" />
+    </div>
+
     <button onclick="login()">Log In</button>
-    <p id="loginError" style="color:red;"></p>
-    <hr />
-    <button onclick="document.getElementById('signupContainer').style.display = 'block';">Create Account</button>
-  </div>
-  <div id="signupContainer" class="signup-container" style="display:none;">
-    <button class="close-btn" onclick="document.getElementById('signupContainer').style.display='none';">✖</button>
-    <h3>Sign Up</h3>
-    <input type="text" id="newUsername" placeholder="New Username" />
-    <input type="password" id="newPassword" placeholder="New Password" />
-    <button onclick="addUser()">Sign Up</button>
-  </div>
-</div>
 
-<div class="container dashboard" id="dashboard" style="display: none;">
-  <div class="nav-buttons">
-    <button onclick="showPage('settingsPage')">⚙️ Settings</button>
-    <button onclick="showPage('expensesPage')">📄 Expenses</button>
-    <button onclick="showPage('groceryPage')">🛒 Grocery</button>
-    <button onclick="showPage('onlinePage')">💻 Online</button>
-    <button onclick="showPage('marketPage')">🧺 Market</button>
-    <button onclick="logout()">🚪 Logout</button>
+    <div class="error" id="errorMsg"></div>
   </div>
 
-  <div id="settingsPage" class="page section">
-    <h2>Settings</h2>
-    <input type="text" id="removeUsername" placeholder="Username to Remove" />
-    <button onclick="removeUser()">Remove User</button>
-  </div>
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
 
-  <div id="expensesPage" class="page section">
-    <h2>Expenses Report</h2>
-    <input type="number" id="incomeInput" placeholder="Set Income" />
-    <button onclick="setIncome()">Update Income</button>
-    <p>Income: ₱<span id="incomeDisplay">0.00</span></p>
-    <p>Expenses: ₱<span id="expensesDisplay">0.00</span></p>
-    <p>Balance: ₱<span id="expensesBalance">0.00</span></p>
-    <label>Filter by Date:</label>
-    <input type="date" id="filterDate" onchange="loadExpenses()" />
-    <button onclick="exportPDF()">📄 Export as PDF</button>
-    <table>
-      <thead><tr><th>Date</th><th>Section</th><th>Description</th><th>Amount</th></tr></thead>
-      <tbody id="expensesTable"></tbody>
-    </table>
-  </div>
-
-  <div id="groceryPage" class="page section">
-    <h2>Grocery Budget</h2>
-    <input type="number" id="groceryBudgetInput" placeholder="Set Budget" />
-    <button onclick="setBudget('grocery')">Set Budget</button>
-    <p>Budget: ₱<span id="groceryBudget">0.00</span></p>
-    <p>Balance: ₱<span id="groceryBalance">0.00</span></p>
-    <input type="text" id="groceryNewItemName" placeholder="New Item Name" />
-    <button onclick="addNewItem('grocery')">Add Item</button>
-    <div id="groceryItemsList"></div>
-  </div>
-
-  <div id="onlinePage" class="page section">
-    <h2>Online Budget</h2>
-    <input type="number" id="onlineBudgetInput" placeholder="Set Budget" />
-    <button onclick="setBudget('online')">Set Budget</button>
-    <p>Budget: ₱<span id="onlineBudget">0.00</span></p>
-    <p>Balance: ₱<span id="onlineBalance">0.00</span></p>
-    <input type="text" id="onlineNewItemName" placeholder="New Item Name" />
-    <button onclick="addNewItem('online')">Add Item</button>
-    <div id="onlineItemsList"></div>
-  </div>
-
-  <div id="marketPage" class="page section">
-    <h2>Market Budget</h2>
-    <input type="number" id="marketBudgetInput" placeholder="Set Budget" />
-    <button onclick="setBudget('market')">Set Budget</button>
-    <p>Budget: ₱<span id="marketBudget">0.00</span></p>
-    <p>Balance: ₱<span id="marketBalance">0.00</span></p>
-    <input type="text" id="marketNewItemName" placeholder="New Item Name" />
-    <button onclick="addNewItem('market')">Add Item</button>
-    <div id="marketItemsList"></div>
-  </div>
-</div>
-
-<footer>&copy; 2025 Maki Web. All rights reserved</footer>
-
-<script>
-  // User and Data Setup
-  let users = JSON.parse(localStorage.getItem('makiUsers')) || [{username: 'admin', password: '1234'}];
-  let currentUser = localStorage.getItem('makiCurrentUser') || null;
-  let userData = JSON.parse(localStorage.getItem('makiUserData')) || {};
-  let archiveData = JSON.parse(localStorage.getItem('makiArchiveData')) || {};
-
-  function saveUsers() {
-    localStorage.setItem('makiUsers', JSON.stringify(users));
-  }
-  function saveUserData() {
-    if (currentUser) localStorage.setItem('makiUserData', JSON.stringify(userData));
-  }
-  function saveArchiveData() {
-    localStorage.setItem('makiArchiveData', JSON.stringify(archiveData));
-  }
-
-  // Show/hide pages
-  function showPage(pageId) {
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => p.style.display = 'none');
-    document.getElementById(pageId).style.display = 'block';
-    if (pageId === 'expensesPage') loadExpenses();
-    if (pageId === 'groceryPage') renderItems('grocery');
-    if (pageId === 'onlinePage') renderItems('online');
-    if (pageId === 'marketPage') renderItems('market');
-  }
-
-  // Login flow
-  function login() {
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const err = document.getElementById('loginError');
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-      currentUser = username;
-      localStorage.setItem('makiCurrentUser', username);
-      if (!userData[currentUser]) {
-        userData[currentUser] = {
-          income: 0,
-          expenses: [],
-          budget: { grocery: 0, online: 0, market: 0 },
-          items: { grocery: [], online: [], market: [] }
-        };
-        saveUserData();
+      if (username === 'tyri' && password === '112621') {
+        window.location.href = 'https://www.capcut.com/view/7469980053251260945?enter_from=page_header&from_page=work_space&tab=all&workspaceId=7378013520891412496&from=workspace';
+      } else {
+        errorMsg.textContent = 'Invalid username or password';
       }
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      showPage('expensesPage');
-      err.textContent = '';
-      loadUserData();
-    } else {
-      err.textContent = 'Invalid username or password.';
     }
-  }
-
-  function logout() {
-    currentUser = null;
-    localStorage.removeItem('makiCurrentUser');
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('loginPage').style.display = 'block';
-  }
-
-  // Sign up
-  function addUser() {
-    const newUsername = document.getElementById('newUsername').value.trim();
-    const newPassword = document.getElementById('newPassword').value;
-    if (!newUsername || !newPassword) return alert('Please enter username and password.');
-    if (users.find(u => u.username === newUsername)) return alert('Username already exists.');
-    users.push({username: newUsername, password: newPassword});
-    saveUsers();
-    alert('User created. Please log in.');
-    document.getElementById('signupContainer').style.display = 'none';
-  }
-
-  // Remove User (Settings)
-  function removeUser() {
-    const removeUsername = document.getElementById('removeUsername').value.trim();
-    if (!removeUsername) return alert('Enter username to remove');
-    if (removeUsername === currentUser) return alert('You cannot remove yourself.');
-    const index = users.findIndex(u => u.username === removeUsername);
-    if (index < 0) return alert('User not found');
-    users.splice(index, 1);
-    delete userData[removeUsername];
-    saveUsers();
-    saveUserData();
-    alert('User removed.');
-  }
-
-  // Load user data to UI
-  function loadUserData() {
-    const data = userData[currentUser];
-    if (!data) return;
-    document.getElementById('incomeDisplay').textContent = data.income.toFixed(2);
-    document.getElementById('expensesDisplay').textContent = calculateTotalExpenses().toFixed(2);
-    document.getElementById('expensesBalance').textContent = (data.income - calculateTotalExpenses()).toFixed(2);
-
-    ['grocery', 'online', 'market'].forEach(section => {
-      document.getElementById(section + 'Budget').textContent = data.budget[section].toFixed(2);
-      document.getElementById(section + 'Balance').textContent = (data.budget[section] - calculateSectionExpenses(section)).toFixed(2);
-    });
-  }
-
-  // Calculate total expenses
-  function calculateTotalExpenses() {
-    const data = userData[currentUser];
-    if (!data) return 0;
-    return data.expenses.reduce((sum, e) => sum + e.amount, 0);
-  }
-
-  // Calculate expenses per section
-  function calculateSectionExpenses(section) {
-    const data = userData[currentUser];
-    if (!data) return 0;
-    return data.expenses.filter(e => e.section === section).reduce((sum, e) => sum + e.amount, 0);
-  }
-
-  // Set income (resets budgets & archives old data)
-  function setIncome() {
-    const newIncomeRaw = document.getElementById('incomeInput').value;
-    const newIncome = parseFloat(newIncomeRaw);
-    if (isNaN(newIncome) || newIncome < 0) {
-      alert('Enter valid income.');
-      return;
-    }
-    if (!userData[currentUser]) userData[currentUser] = {};
-    // Archive old data if any
-    if (userData[currentUser].income > 0) {
-      archiveUserData();
-    }
-    // Reset budgets, expenses, items
-    userData[currentUser] = {
-      income: newIncome,
-      expenses: [],
-      budget: { grocery: 0, online: 0, market: 0 },
-      items: { grocery: [], online: [], market: [] }
-    };
-    saveUserData();
-    loadUserData();
-    alert('Income set and all budgets/expenses reset.');
-    document.getElementById('incomeInput').value = '';
-    showPage('expensesPage');
-  }
-
-  // Archive current user data on income reset
-  function archiveUserData() {
-    if (!archiveData[currentUser]) archiveData[currentUser] = [];
-    // Save current snapshot with timestamp
-    archiveData[currentUser].push({
-      timestamp: new Date().toISOString(),
-      data: JSON.parse(JSON.stringify(userData[currentUser]))
-    });
-    saveArchiveData();
-  }
-
-  // Set budgets
-  function setBudget(section) {
-    const inputId = section + 'BudgetInput';
-    const budgetInput = document.getElementById(inputId);
-    let budget = parseFloat(budgetInput.value);
-    if (isNaN(budget) || budget < 0) {
-      alert('Enter valid budget amount.');
-      return;
-    }
-    const data = userData[currentUser];
-    if (!data) return;
-
-    // Ensure total budgets do not exceed income
-    let currentTotalBudgets = Object.values(data.budget).reduce((a,b) => a+b, 0);
-    let currentSectionBudget = data.budget[section] || 0;
-    let newTotalBudgets = currentTotalBudgets - currentSectionBudget + budget;
-    if (newTotalBudgets > data.income) {
-      alert(`Total budgets (${newTotalBudgets.toFixed(2)}) exceed income (${data.income.toFixed(2)}).`);
-      return;
-    }
-
-    data.budget[section] = budget;
-    saveUserData();
-    loadUserData();
-    budgetInput.value = '';
-    renderItems(section);
-  }
-
-  // Add new item for a section
-  function addNewItem(section) {
-    const inputId = section + 'NewItemName';
-    const newItemInput = document.getElementById(inputId);
-    const name = newItemInput.value.trim();
-    if (!name) return alert('Enter item name');
-    const data = userData[currentUser];
-    if (!data) return;
-
-    // Check for duplicates
-    if (data.items[section].some(i => i.name.toLowerCase() === name.toLowerCase())) {
-      alert('Item with that name already exists.');
-      return;
-    }
-    data.items[section].push({ name, amount: 0, date: '' });
-    saveUserData();
-    renderItems(section);
-    newItemInput.value = '';
-  }
-
-  // Render items for a section with inputs for amount and date, plus remove button
-  function renderItems(section) {
-    const data = userData[currentUser];
-    if (!data) return;
-    const containerId = section + 'ItemsList';
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-
-    data.items[section].forEach((item, index) => {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'item';
-
-      const nameSpan = document.createElement('span');
-      nameSpan.textContent = item.name;
-      nameSpan.style.minWidth = '100px';
-
-      const amountInput = document.createElement('input');
-      amountInput.type = 'number';
-      amountInput.min = 0;
-      amountInput.step = 0.01;
-      amountInput.placeholder = 'Amount';
-      amountInput.value = item.amount || '';
-      amountInput.onchange = () => {
-        let val = parseFloat(amountInput.value);
-        if (isNaN(val) || val < 0) val = 0;
-        // Validate total expenses + this change <= budget
-        const oldAmount = item.amount || 0;
-        const totalExp = calculateSectionExpenses(section) - oldAmount + val;
-        if (totalExp > data.budget[section]) {
-          alert(`Total expenses in ${section} exceed the budget.`);
-          amountInput.value = oldAmount.toFixed(2);
-          return;
-        }
-        item.amount = val;
-        // Add to overall expenses list with section and date
-        updateExpensesFromItems(section);
-        saveUserData();
-        loadUserData();
-        loadExpenses();
-      };
-
-      const dateInput = document.createElement('input');
-      dateInput.type = 'date';
-      dateInput.value = item.date || '';
-      dateInput.onchange = () => {
-        item.date = dateInput.value;
-        updateExpensesFromItems(section);
-        saveUserData();
-        loadExpenses();
-      };
-
-      const removeBtn = document.createElement('button');
-      removeBtn.textContent = 'x';
-      removeBtn.title = 'Remove item';
-      removeBtn.onclick = () => {
-        data.items[section].splice(index, 1);
-        updateExpensesFromItems(section);
-        saveUserData();
-        renderItems(section);
-        loadUserData();
-        loadExpenses();
-      };
-
-      itemDiv.appendChild(nameSpan);
-      itemDiv.appendChild(amountInput);
-      itemDiv.appendChild(dateInput);
-      itemDiv.appendChild(removeBtn);
-      container.appendChild(itemDiv);
-    });
-  }
-
-  // Sync items to expenses array to keep all expenses for reports
-  function updateExpensesFromItems(section) {
-    const data = userData[currentUser];
-    if (!data) return;
-    // Remove all expenses from this section first
-    data.expenses = data.expenses.filter(e => e.section !== section);
-    // Add items from section as expenses
-    data.items[section].forEach(item => {
-      if (item.amount > 0) {
-        data.expenses.push({
-          section: section,
-          description: item.name,
-          amount: item.amount,
-          date: item.date || new Date().toISOString().slice(0,10)
-        });
-      }
-    });
-  }
-
-  // Load and render expenses in expensesPage table, optionally filtered by date
-  function loadExpenses() {
-    const data = userData[currentUser];
-    if (!data) return;
-    const filterDate = document.getElementById('filterDate').value;
-    const tbody = document.getElementById('expensesTable');
-    tbody.innerHTML = '';
-    let filtered = data.expenses;
-    if (filterDate) {
-      filtered = filtered.filter(e => e.date === filterDate);
-    }
-    filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-    filtered.forEach(e => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${e.date}</td><td>${capitalize(e.section)}</td><td>${e.description}</td><td>₱${e.amount.toFixed(2)}</td>`;
-      tbody.appendChild(tr);
-    });
-    // Update expenses display after filter
-    let totalFiltered = filtered.reduce((sum, e) => sum + e.amount, 0);
-    document.getElementById('expensesDisplay').textContent = totalFiltered.toFixed(2);
-    const income = data.income;
-    document.getElementById('incomeDisplay').textContent = income.toFixed(2);
-    document.getElementById('expensesBalance').textContent = (income - totalFiltered).toFixed(2);
-  }
-
-  // Capitalize utility
-  function capitalize(str) {
-    if (!str) return '';
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  // Export expenses table to PDF using jsPDF and autotable
-  function exportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text("Budget Tracker Expenses Report", 14, 22);
-    doc.setFontSize(12);
-    const data = [];
-    document.querySelectorAll('#expensesTable tr').forEach(row => {
-      const rowData = [];
-      row.querySelectorAll('td').forEach(td => {
-        rowData.push(td.textContent);
-      });
-      if (rowData.length) data.push(rowData);
-    });
-    if (data.length === 0) return alert('No data to export.');
-    doc.autoTable({
-      head: [['Date', 'Section', 'Description', 'Amount']],
-      body: data,
-      startY: 30,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [30, 144, 255] }
-    });
-    doc.save('expenses_report.pdf');
-  }
-
-  // On page load, check if logged in
-  window.onload = () => {
-    if (currentUser) {
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      loadUserData();
-      showPage('expensesPage');
-    }
-  };
-</script>
+  </script>
 </body>
 </html>
